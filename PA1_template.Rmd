@@ -7,11 +7,15 @@ output:
 
 
 ## Loading and preprocessing the data
+This project code assumes only that the **csv** file is in the same folde as this Rmd file.
 The data is in the form of a csv file inside a zip folder. So, the following steps have been followed to load the data.
 1. Unzip the file
 2. Read the ensuing csv file using read.csv
 
 ```{r chunk1, echo = TRUE}
+library(dplyr)
+library(lattice)
+
 unzip("activity.zip")
 activityData <- read.csv("activity.csv", header = TRUE)
 print(head(activityData))
@@ -120,4 +124,19 @@ varLevels <- levels(activityDataNaImputed$dayOfWeek)
 cat(varLevels)
 ```
 
-2. To make the panel plot in order to compare steps on weekday and weekend, the DF with the new column has been grouped by *interval* and the factor *dayOfWeek*. Now, summarizing this will give the steps taken in each interval, categorized on *weekday* and *weekend*
+2. To make the panel plot in order to compare steps on weekday and weekend, the DF with the new column has been grouped by *interval* and the factor *dayOfWeek*. Now, summarizing this with *mean*  will give the mean steps taken in each interval, categorized on *weekday* and *weekend*. This summarized data is put in a new dataset *summaryActivity*. The column of this dataset containing the mean, is named as **meanSteps**
+An xyplot (lattice plot) of this dataframe, categorized on *dayOfWeek* gives a panel plot, comparing the activity (steps) on weekdays and weekends. The follwoing code does this.
+
+```{r chunk11, echo = TRUE}
+activityDataNaImputed = tbl_df(activityDataNaImputed)
+activityDataNaImputedByInterval <- group_by(activityDataNaImputed, interval, dayOfWeek)
+summaryActivity <- summarize(activityDataNaImputedByInterval, mean(steps))
+colnames(summaryActivity) <- c("interval", "dayOfWeek", "meanSteps")
+summaryActivity$dayOfWeek <- as.factor(summaryActivity$dayOfWeek)
+ltplotCompare <- xyplot(summaryActivity$meanSteps ~ summaryActivity$interval | 
+                   summaryActivity$dayOfWeek,
+                 type = "l", col = "green", layout = c(1, 2),
+                 xlab = "Interval", ylab = "Average Steps",
+                 main = "Average Steps Per Interval over weekdays and weekends")
+print(ltplotCompare)
+```
