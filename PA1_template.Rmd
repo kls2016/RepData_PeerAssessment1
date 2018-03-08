@@ -53,7 +53,7 @@ Then, a lattice plot is created using *xyplot*. This is then printed.
 
 ```{r chunk5, echo = TRUE}
 meanStepsInterval <- tapply(activityData$steps, activityData$interval, mean, na.rm = TRUE)
-ltplot <- xyplot(meanStepsInterval ~ activityData$interval, type = "l", col = "deepskyblue", main = "Average Steps Taken")
+ltplot <- xyplot(meanStepsInterval ~ activityData$interval, type = "l", col = "deepskyblue", xlab = "Interval", ylab = "Average Steps", main = "Average Steps Taken")
 print(ltplot)
 ```
 
