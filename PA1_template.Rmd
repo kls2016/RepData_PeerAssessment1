@@ -7,12 +7,40 @@ output:
 
 
 ## Loading and preprocessing the data
+The data is in the form of a csv file inside a zip folder. So, the following steps have been followed to load the data.
+1. Unzip the file
+2. Read the ensuing csv file using read.csv
 
-
+```{r chunk1, echo = TRUE}
+unzip("activity.zip")
+activityData <- read.csv("activity.csv", header = TRUE)
+print(head(activityData))
+```
 
 ## What is mean total number of steps taken per day?
+1. The total number of steps per day can be found by running *tapply()* on *steps* over the margin *date*. To ensure that missing values are not considered, na.rm has been set to TRUE
 
+```{r chunk2, echo = TRUE}
+stepsPerDay <- tapply(activityData$steps, activityData$date, sum, na.rm = TRUE)
+```
 
+2. The histogram, basically, is a frequency chart of the number of steps per day. To plot the histogram, first the number of levels of dates (which is a factor), are found.This is just to get the number of bins needed in the histogram.Then, the histogram of *stepsPerDay* is plotted.
+
+```{r chunk3, echo = TRUE}
+lenDates <- length(levels(activityData$date))
+hist(stepsPerDay, lenDates, col = "deepskyblue")
+```
+
+3. The mean value of steps per day, is just the mean of the *stepsPerDay* variable. The median is also found below.
+
+```{r chunk4, echo = TRUE}
+meanStepsPerDay <- mean(stepsPerDay)
+printMean <- paste("Mean Steps per day = ", meanStepsPerDay)
+cat(printMean)
+medianStepsPerDay <- median(stepsPerDay)
+printMedian <- paste("Median of Steps Per Day is ", medianStepsPerDay)
+cat(printMedian)
+```
 
 ## What is the average daily activity pattern?
 
